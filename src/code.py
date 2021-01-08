@@ -9,9 +9,11 @@ from tools.notification import Notification
 from tools.tar_file import TarFile
 
 class Code():
-    SITE = os.environ.get('-s', 'default')
-    RS_CONFIG = SITES_RESTORE[SITE]['REMOTE_SERVER']
-    PATH_HTDOCS_DIR = f"{SITES_RESTORE[SITE]['LOCAL_SERVER']['ROOT_SITE']}"
+    
+    def __init__(self):
+        self.SITE = os.environ.get('-s', 'default')
+        self.RS_CONFIG = SITES_RESTORE[self.SITE]['REMOTE_SERVER']
+        self.PATH_HTDOCS_DIR = f"{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['ROOT_SITE']}"
 
     def _get_path_folder_root_backup(self):
         """Obtiene la ruta de la carpeta raíz del proyecto en el backup

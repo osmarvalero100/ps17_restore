@@ -9,11 +9,12 @@ class Ssh():
     ssh_client = None
     noti = None
     progress = 0
-    SITE = os.environ.get('-s', 'default')
-    RS_CONFIG = SITES_RESTORE[SITE]['REMOTE_SERVER']
+    
 
     def __init__(self):
         self.noti = Notification()
+        self.SITE = os.environ.get('-s', 'default')
+        self.RS_CONFIG = SITES_RESTORE[self.SITE]['REMOTE_SERVER']
         
         try:
             self.ssh_client = paramiko.SSHClient()

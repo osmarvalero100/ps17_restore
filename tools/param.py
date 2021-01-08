@@ -35,8 +35,7 @@ class Param():
                     flag = str_param[0:index_sep]
                     value = str_param[index_sep+1:len(str_param)]
                     os.environ[flag] = value
-
-
+        
     def getObjects(self):
         """ Obtiene un listo de objetos a resturara ej: db, code, img
 

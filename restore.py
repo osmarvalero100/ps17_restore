@@ -9,14 +9,15 @@ from tools.validate import Validate
 
 
 if __name__ == '__main__':
+    param = Param()
+    
+    param.set_params(sys.argv[1:])
+    objects = param.getObjects()
+
     db = Database()
     code = Code()
     img = Img()
-    param = Param()
     validate = Validate()
-
-    param.set_params(sys.argv[1:])
-    objects = param.getObjects()
 
     if not os.environ.get('-src'):
         print('Login servidor de backups')

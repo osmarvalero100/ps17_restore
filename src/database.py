@@ -8,8 +8,10 @@ from tools.tar_file import TarFile
 
 class Database():
     
-    SITE = os.environ.get('-s', 'default')
-    RS_CONFIG = SITES_RESTORE[SITE]['REMOTE_SERVER']
+    def __init__(self):
+        
+        self.SITE = os.environ.get('-s', 'default')
+        self.RS_CONFIG = SITES_RESTORE[self.SITE]['REMOTE_SERVER']
 
     def _get_path_sql_file_backup(self):
         """Obtiene la ruta del archivo sql dentro del backup
@@ -34,7 +36,7 @@ class Database():
         noti = Notification()
         dba = DbActions()
         tar_file = TarFile()
-        
+
         database = SITES_RESTORE[self.SITE]['LOCAL_DB']['DATABASE']
         user = SITES_RESTORE[self.SITE]['LOCAL_DB']['USER']
         password = SITES_RESTORE[self.SITE]['LOCAL_DB']['PASSWORD']

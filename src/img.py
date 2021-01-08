@@ -7,9 +7,10 @@ from tools.tar_file import TarFile
 
 class Img():
 
-    SITE = os.environ.get('-s', 'default')
-    RS_CONFIG = SITES_RESTORE[SITE]['REMOTE_SERVER']
-    PATH_HTDOCS_DIR = f"{SITES_RESTORE[SITE]['LOCAL_SERVER']['ROOT_SITE']}"
+    def __init__(self):
+        self.SITE = os.environ.get('-s', 'default')
+        self.RS_CONFIG = SITES_RESTORE[self.SITE]['REMOTE_SERVER']
+        self.PATH_HTDOCS_DIR = f"{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['ROOT_SITE']}"
 
     def get_path_folder_img_backup(self):
         """Obtiene la ruta de la carpeta de las imágenes del proyecto en el backup

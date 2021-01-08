@@ -6,20 +6,23 @@ from tools.notification import Notification
 
 class DbActions:
 
-    SITE = os.environ.get('-s', 'default')
-    DB_CONFIG = SITES_RESTORE[SITE]['LOCAL_DB']
     db_cursor = None
     noti = None
 
     def __init__(self):
+        self.SITE = os.environ.get('-s', 'default')
+        self.DB_CONFIG = SITES_RESTORE[self.SITE]['LOCAL_DB']
         self.noti = Notification()
 
-    def __connect(self, db = DB_CONFIG['DATABASE']):
+    def __connect(self, db = 'site'):
         """Conexión a la base de datos.
 
         Args:
             db (str), optional): Nombre de la base de datos a conectar.
         """
+        if db == 'site':
+            db = self.DB_CONFIG['DATABASE']
+
         try:
             if db:
                 connection = pymysql.connect(host=self.DB_CONFIG['HOST'], user=self.DB_CONFIG['USER'], password=self.DB_CONFIG['PASSWORD'],
