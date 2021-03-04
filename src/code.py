@@ -149,7 +149,7 @@ class Code():
         # Renueva el código fuente
         os.makedirs(self.PATH_HTDOCS_DIR, exist_ok=True)
         path_htdocs_backup = self._get_path_folder_root_backup().split('\n')[0]
-        mv_command = [f'mv {path_htdocs_backup}{SEP}* {self.PATH_HTDOCS_DIR}']
+        mv_command = [f'cp -r {path_htdocs_backup}{SEP}. {self.PATH_HTDOCS_DIR}']
         cmd.execute(mv_command)
 
         self.__create_file_parameters()
