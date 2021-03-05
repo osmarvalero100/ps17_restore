@@ -66,8 +66,10 @@ class Database():
             dba.disabled_modules()
             dba.set_mode_test_module()
 
+            num_restore_tables = dba.get_total_tables_db()
+
             cmd.execute([f"rm -rf {TMP_DIR}{SEP}db"])
-            noti.text_success(f'Base de datos {database} restaurada.')
+            noti.text_success(f'Base de datos {database} restaurada. ( Tablas: {num_restore_tables} )')
         except Exception as e:
             noti.text_error(f'Error restaurando la base de datos {database}: {e}')
         

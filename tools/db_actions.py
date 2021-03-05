@@ -171,6 +171,20 @@ class DbActions:
             return self.db_cursor.fetchone()['iso_code']
         else:
             return 'es'
+
+    def get_total_tables_db(self):
+        """
+        Obtiene el total de tablas restauradas
+        """
+        self.__connect()
+        sql = f"SELECT count(*) AS total_tables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'mexico_mx'"
+        try:
+            self.db_cursor.execute(sql)
+
+            return self.db_cursor.fetchone()['total_tables']
+        except (pymysql.OperationalError, pymysql.InternalError, pymysql.ProgrammingError) as e:
+                self.noti.text_error(f'Error contanto tablas restauradas: {e}')
+        
         
         
         
