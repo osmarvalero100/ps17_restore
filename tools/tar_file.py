@@ -1,5 +1,6 @@
 import tarfile
 from tools.notification import Notification
+from .utils import Utils
 from settings import SEP, TMP_DIR
 
 
@@ -16,7 +17,11 @@ class TarFile():
             type_obj (str): tipo de objeto: code, db ó img
         """
         noti = Notification()
-        print(f'Descomprimiendo backup {type_obj}.')
+        utils = Utils()
+        
+        size_bk = utils.get_file_size(file)
+
+        print(f'Descomprimiendo backup {type_obj} ( {size_bk} )')
 
         try:
             f = tarfile.open(file, 'r:gz')
