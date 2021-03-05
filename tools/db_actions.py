@@ -177,7 +177,7 @@ class DbActions:
         Obtiene el total de tablas restauradas
         """
         self.__connect()
-        sql = f"SELECT count(*) AS total_tables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'mexico_mx'"
+        sql = f"SELECT count(*) AS total_tables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{self.DB_CONFIG['DATABASE']}'"
         try:
             self.db_cursor.execute(sql)
 
