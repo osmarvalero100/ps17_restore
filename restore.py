@@ -14,21 +14,21 @@ if __name__ == '__main__':
     param.set_params(sys.argv[1:])
     objects = param.getObjects()
 
-    db = Database()
-    code = Code()
-    img = Img()
-    validate = Validate()
-
     if not os.environ.get('-src'):
         print('Login servidor de backups')
         os.environ['RS_USER'] = input('Usuario: ')
         os.environ['RS_PASS'] = getpass('Contraseña: ')
     
+    validate = Validate()
+    
     # Validar configuración
     if validate.all():
         if 'db' in objects:
+            db = Database()
             db.restore()
         if 'code' in objects:
+            code = Code()
             code.restore()
         if 'img' in objects:
+            img = Img()
             img.restore()
