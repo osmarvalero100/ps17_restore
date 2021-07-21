@@ -1,11 +1,14 @@
+import os
+from settings import TMP_DIR, SEP
 from .cmd import Cmd
 
 class Utils():
     """
     Métodos utiles de uso general
     """
-    
-    def get_file_size(self, path_bk):
+
+    @staticmethod
+    def get_file_size(path_bk):
         """Obtiene el peso de un archivo
 
         Args:
@@ -23,4 +26,16 @@ class Utils():
             return result.replace('total', '').rstrip()
         except Exception as e:
             return '--'
+
+    @staticmethod
+    def get_tmp_path_site_by_object(obj_type):
+        """
+        Args:
+            obj_type (str): db - code - img
         
+        returns:
+            [str]: Ruta temporal donde se almacena el tipo de objeto
+        """
+        site = os.environ.get('-s', 'default')
+
+        return f'{TMP_DIR}{SEP}{site}{SEP}{obj_type}'

@@ -17,16 +17,16 @@ class TarFile():
             type_obj (str): tipo de objeto: code, db ó img
         """
         noti = Notification()
-        utils = Utils()
         
-        size_bk = utils.get_file_size(file)
+        size_bk = Utils.get_file_size(file)
+        object_path = Utils.get_tmp_path_site_by_object(type_obj)
 
         print(f'Descomprimiendo backup {type_obj} ( {size_bk} )')
 
         try:
             f = tarfile.open(file, 'r:gz')
             with f as t:
-                t.extractall(f'{TMP_DIR}{SEP}{type_obj}')
+                t.extractall(f'{object_path}')
             f.close()
             noti.text_success('Descompresión finalizada.')
         except Exception as e:

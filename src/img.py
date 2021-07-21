@@ -4,6 +4,7 @@ from tools.cmd import Cmd
 from tools.notification import Notification
 from tools.ssh import Ssh
 from tools.tar_file import TarFile
+from tools.utils import Utils
 
 class Img():
 
@@ -19,7 +20,8 @@ class Img():
             str: Ruta de carpeta de imágenes del backup
         """
         cmd = Cmd()
-        command = [f'find {TMP_DIR}{SEP}img -type d -name admin']
+        object_path = Utils.get_tmp_path_site_by_object('img')
+        command = [f'find {object_path} -type d -name admin']
         result = cmd.execute(command)
 
         return result.replace(f'{SEP}admin\n', '')
@@ -45,7 +47,9 @@ class Img():
         command = [f'mv {path_img_backup} {self.PATH_HTDOCS_DIR}']
         cmd.execute(command)
 
-        cmd.execute([f"rm -rf {TMP_DIR}{SEP}img"])
+        object_path = Utils.get_tmp_path_site_by_object('db')
+
+        cmd.execute([f"rm -rf {object_path}"])
 
         noti = Notification()
         noti.text_success(f'Imágenes restauradas.')

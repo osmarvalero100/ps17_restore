@@ -4,6 +4,7 @@ import shutil
 import paramiko
 from settings import SEP, SITES_RESTORE, TMP_DIR, USER_OS
 from tools.notification import Notification
+from tools.utils import Utils
 
 class Ssh():
     ssh_client = None
@@ -39,8 +40,11 @@ class Ssh():
             stdin, stdout, stderr = self.ssh_client.exec_command(cmd)
             time.sleep(1)
             tmp_res = stdout.read().decode()
-            result = tmp_res.split(f'{self.RS_CONFIG["FOLDER_DB"]}{SEP}')[1]
-
+               
+            try:
+                result = tmp_res.split(f'{self.RS_CONFIG["FOLDER_DB"]}{SEP}')[1]
+            except IndexError as e:
+                raise self.noti.text_error(stderr.read().decode().split('\n'))
         elif os.environ.get('-rsrc'):
         
             return eval(os.environ.get('-rsrc'))[obj_type]
@@ -86,7 +90,7 @@ class Ssh():
         tar_remote_file = self.get_file_name_remote_backup(rs_dir, obj_type)
 
         if tar_remote_file[-7:] == '.tar.gz':
-            object_path = f'{TMP_DIR}{SEP}{obj_type}'
+            object_path = Utils.get_tmp_path_site_by_object(obj_type)
 
             if os.path.isdir(object_path):
                 shutil.rmtree(object_path)
@@ -95,7 +99,7 @@ class Ssh():
             try:
                 sftp_client =  self.ssh_client.open_sftp()
                 remote_file = f'{rs_dir}{SEP}{tar_remote_file}'
-                local_file = f'{TMP_DIR}{SEP}{obj_type}{SEP}{tar_remote_file}'
+                local_file = f'{object_path}{SEP}{tar_remote_file}'
 
                 # Descarga backup del servidor y se guarda en directorio local tmp
                 print(f'Inicia la descarga del backup {obj_type}')
