@@ -49,7 +49,24 @@ SITES_RESTORE = {
                     #'MODULE_NAME_VAR_SANDBOX'
                 ]
             }
-        }
+        },
+        # Agrege este bloque SOLO si está usando multitienda (ps_shop_url)
+        'SHOPS': [
+            {
+                'id_shop': 1,
+                'domain': 'shop-1.com',
+                'domain_ssl': 'shop-1.com',
+                'physical_uri': '/',
+                'virtual_uri': ''
+            },
+            {
+                'id_shop': 2,
+                'domain': 'shop-2.com',
+                'domain_ssl': 'shop-2.com',
+                'physical_uri': '/',
+                'virtual_uri': ''
+            }
+        ]
     }
     # Agregue aquí más sitios a restaurar
 }

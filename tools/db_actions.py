@@ -92,18 +92,40 @@ class DbActions:
 
     def update_shop_url(self):
         """Actualiza la URL del sitio """
-        local_domain = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SHOP_URL']
-        id_shop = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['ID_SHOP']
-        
-        try:
-            self.__connect()
-            sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}shop_url SET domain = '{local_domain}', domain_ssl = '{local_domain}' WHERE id_shop = {id_shop}"
-            self.db_cursor.execute(sql)
-            self.db_cursor.close()
-            print(F'- Shop Domain cambiado a: {local_domain}')
+        self.__connect()
 
-        except (pymysql.OperationalError, pymysql.InternalError, pymysql.ProgrammingError) as e:
-            self.noti.text_error(f"Error al actualizar la tabla {self.DB_CONFIG['PS_PREFIX']}shop_url: {e}")
+        if 'SHOPS' in SITES_RESTORE[self.SITE]:
+            # Para multitienda
+            for shop in SITES_RESTORE[self.SITE]['SHOPS']:
+                try:
+                    id_shop = shop['id_shop']
+                    domain = shop['domain']
+                    physical_uri = shop['physical_uri']
+                    virtual_uri = shop['virtual_uri']
+
+                    setVals = f"domain = '{domain}', domain_ssl = '{domain}', physical_uri = '{physical_uri}', virtual_uri = '{virtual_uri}'"
+
+                    sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}shop_url SET {setVals} WHERE id_shop = {id_shop}"
+                    self.db_cursor.execute(sql)
+
+                    print(f"- Shop Domain {id_shop} cambiado a: {domain}")
+
+                except (pymysql.OperationalError, pymysql.InternalError, pymysql.ProgrammingError) as e:
+                    self.noti.text_error(f"Error al actualizar la tabla {self.DB_CONFIG['PS_PREFIX']}shop_url: {e}")
+        else:
+            local_domain = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SHOP_URL']
+            id_shop = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['ID_SHOP']
+            
+            try:
+                sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}shop_url SET domain = '{local_domain}', domain_ssl = '{local_domain}' WHERE id_shop = {id_shop}"
+                self.db_cursor.execute(sql)
+                
+                print(f'- Shop Domain cambiado a: {local_domain}')
+
+            except (pymysql.OperationalError, pymysql.InternalError, pymysql.ProgrammingError) as e:
+                self.noti.text_error(f"Error al actualizar la tabla {self.DB_CONFIG['PS_PREFIX']}shop_url: {e}")
+        
+        self.db_cursor.close()
 
     def update_configuration(self):
         """ Actualiza el dominio del sitio y desactiva el SSL del sitio """
