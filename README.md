@@ -37,7 +37,7 @@ Argumentos de línea  de comandos
 
 **-szdb**  =>  Obtiene el backup remoto de base de datos de mayor tamaño creado en las últimas 24 horas.
 
-Uso de argumentos de línea de comandos
+Ejemplos
 --
 * ```sudo python3 restore.py -s=my_site```. El archivo settings.py permite configurar muchos sitios a restaurar en valor de **-s** hace referencia al sitio a restaurar y en concreto a la llave de configuración dentro de la variable "SITES_RESTORE". Cada llave corresponde a los datos de configuración de un sitio en específico.
 * ```sudo python3 restore.py -src="{'db':'/home/user/backups/db/backup_db.tar.gz', 'code':'/home/user/backups/code/backup_code.tar.gz', 'img':'/home/user/backups/img/backup_img.tar.gz'}"```. Permite restaurar un sitio con backup locales, solo debe pasar un objeto json con el tipo de objeto a restaurar y la ruta donde está su backup. Todos los tipo de objetos son opcionales pero necesita pasar mínimo 1 por ejemplo si solo se quiere restaurar la base de datos el objeto json debe quedar así: "{'db':'/home/user/backups/db/backup_db.tar.gz'}".
