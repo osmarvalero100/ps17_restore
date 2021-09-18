@@ -1,4 +1,5 @@
 import os
+from settings import SITES_RESTORE
 
 class Param():
 
@@ -7,6 +8,7 @@ class Param():
         """
         info = """
     --help  Lista los argumentos disponibles.
+    --sites Lista los sitios configurados.
     -s      Nombre del sitio restaurar.
     -src    Pasar los backups locales de manera explicita {'db':'path', 'code': 'path'}.
     -rsrc   Pasar los backups desde el servidor remoto de backups de manera explicita {'db':'path', 'code': 'path'}.
@@ -28,6 +30,12 @@ class Param():
             for str_param in str_params:
                 if str_param == '--help':
                     self.__help()
+                    exit()
+
+                if str_param == '--sites':
+                    for site in SITES_RESTORE.keys():
+                        domain = SITES_RESTORE[site]['LOCAL_SERVER']['SHOP_URL']
+                        print(f' * {site} => {domain}')
                     exit()
 
                 if '=' in str_param:

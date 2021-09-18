@@ -3,10 +3,11 @@ import os
 import random
 from tools.cmd import Cmd
 from tools.ssh import Ssh
-from settings import SITES_RESTORE, TMP_DIR, SEP, USER_OS
+from settings import SITES_RESTORE, SEP, USER_OS
 from tools.db_actions import DbActions
 from tools.notification import Notification
 from tools.tar_file import TarFile
+from tools.utils import Utils
 
 class Code():
     
@@ -22,9 +23,10 @@ class Code():
             str: Ruta de carpeta raíz del proyecto en el backup
         """
         cmd = Cmd()
+        object_path = Utils.get_tmp_path_site_by_object('code')
 
         for root_dir in ['htdocs', 'html']:
-            command = [f'find {TMP_DIR}{SEP}code -type d -name {root_dir}']
+            command = [f'find {object_path} -type d -name {root_dir}']
             result = cmd.execute(command)
 
             if result:
@@ -44,34 +46,34 @@ class Code():
                 if os.path.exists(ps_file_param):
                     os.remove(ps_file_param)
 
-                    new_cookie_key = f"{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['NEW_COOKIE_KEY']}"
+                new_cookie_key = f"{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['NEW_COOKIE_KEY']}"
 
-                    f = open(ps_file_param, 'a')
-                    f.write("<?php return array (\r")
-                    f.write("\t'parameters' =>\r")
-                    f.write("\tarray (\r")
-                    f.write("\t\t'database_host' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['HOST']))
-                    f.write("\t\t'database_port' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['PORT']))
-                    f.write("\t\t'database_name' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['DATABASE']))
-                    f.write("\t\t'database_user' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['USER']))
-                    f.write("\t\t'database_password' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['PASSWORD']))
-                    f.write("\t\t'database_prefix' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['PS_PREFIX']))
-                    f.write("\t\t'database_engine' => 'InnoDB',\r")
-                    f.write("\t\t'mailer_transport' => 'smtp',\r")
-                    f.write("\t\t'mailer_host' => '127.0.0.1',\r")
-                    f.write("\t\t'mailer_user' => NULL,\r")
-                    f.write("\t\t'mailer_password' => NULL,\r")
-                    f.write(f"\t\t'secret' => '{secrets.token_urlsafe(random.randint(53, 79))}',\r")
-                    f.write("\t\t'ps_caching' => 'CacheMemcache',\r")
-                    f.write("\t\t'ps_cache_enable' => false,\r")
-                    f.write(f"\t\t'ps_creation_date' => '{random.randint(2018, 2020)}-{random.randint(1, 12)}-{random.randint(1, 28)}',\r")
-                    f.write("\t\t'locale' => 'es-ES',\r")
-                    f.write(f"\t\t'cookie_key' => '{secrets.token_urlsafe(random.randint(49, 74))}',\r")
-                    f.write(f"\t\t'cookie_iv' => '{secrets.token_urlsafe(8)}',\r")
-                    f.write(f"\t\t'new_cookie_key' => '{new_cookie_key}',\r")
-                    f.write("\t),\r")
-                    f.write(");")
-                    f.close()
+                f = open(ps_file_param, 'a')
+                f.write("<?php return array (\r")
+                f.write("\t'parameters' =>\r")
+                f.write("\tarray (\r")
+                f.write("\t\t'database_host' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['HOST']))
+                f.write("\t\t'database_port' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['PORT']))
+                f.write("\t\t'database_name' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['DATABASE']))
+                f.write("\t\t'database_user' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['USER']))
+                f.write("\t\t'database_password' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['PASSWORD']))
+                f.write("\t\t'database_prefix' => '{}',\r".format(SITES_RESTORE[self.SITE]['LOCAL_DB']['PS_PREFIX']))
+                f.write("\t\t'database_engine' => 'InnoDB',\r")
+                f.write("\t\t'mailer_transport' => 'smtp',\r")
+                f.write("\t\t'mailer_host' => '127.0.0.1',\r")
+                f.write("\t\t'mailer_user' => NULL,\r")
+                f.write("\t\t'mailer_password' => NULL,\r")
+                f.write(f"\t\t'secret' => '{secrets.token_urlsafe(random.randint(53, 79))}',\r")
+                f.write("\t\t'ps_caching' => 'CacheMemcache',\r")
+                f.write("\t\t'ps_cache_enable' => false,\r")
+                f.write(f"\t\t'ps_creation_date' => '{random.randint(2018, 2020)}-{random.randint(1, 12)}-{random.randint(1, 28)}',\r")
+                f.write("\t\t'locale' => 'es-ES',\r")
+                f.write(f"\t\t'cookie_key' => '{secrets.token_urlsafe(random.randint(49, 74))}',\r")
+                f.write(f"\t\t'cookie_iv' => '{secrets.token_urlsafe(8)}',\r")
+                f.write(f"\t\t'new_cookie_key' => '{new_cookie_key}',\r")
+                f.write("\t),\r")
+                f.write(");")
+                f.close()
             else:
                 noti.text_error(f'No se encontro el directorio {self.PATH_HTDOCS_DIR}.')
         except Exception as e:
@@ -161,8 +163,9 @@ class Code():
         self._set_permissions()
 
         url_site = f"http://{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SHOP_URL']}"
+        object_path = Utils.get_tmp_path_site_by_object('code')
         
-        cmd.execute([f"rm -rf {TMP_DIR}{SEP}code"])
+        cmd.execute([f"rm -rf {object_path}"])
         #cmd.execute([f"x-www-browser {url_site}"])
         
         noti.text_success(f'Código fuente restaurado.')

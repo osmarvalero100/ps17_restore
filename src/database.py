@@ -5,6 +5,7 @@ from tools.db_actions import DbActions
 from tools.notification import Notification
 from tools.ssh import Ssh
 from tools.tar_file import TarFile
+from tools.utils import Utils
 
 class Database():
     
@@ -20,7 +21,8 @@ class Database():
             str: Ruta del archivo sql del backup
         """
         cmd = Cmd()
-        command = [f'find {TMP_DIR}{SEP}db -type f -name "*.sql"']
+        object_path = Utils.get_tmp_path_site_by_object('db')
+        command = [f'find {object_path} -type f -name "*.sql"']
 
         result = cmd.execute(command).split('\n')
 
@@ -67,8 +69,9 @@ class Database():
             dba.set_mode_test_module()
 
             num_restore_tables = dba.get_total_tables_db()
+            object_path = Utils.get_tmp_path_site_by_object('db')
 
-            cmd.execute([f"rm -rf {TMP_DIR}{SEP}db"])
+            cmd.execute([f"rm -rf {object_path}"])
             noti.text_success(f'Base de datos {database} restaurada. ( Tablas: {num_restore_tables} )')
         except Exception as e:
             noti.text_error(f'Error restaurando la base de datos {database}: {e}')
