@@ -25,10 +25,10 @@ class DbActions:
 
         try:
             if db:
-                connection = pymysql.connect(host=self.DB_CONFIG['HOST'], user=self.DB_CONFIG['USER'], password=self.DB_CONFIG['PASSWORD'],
+                connection = pymysql.connect(host=self.DB_CONFIG['HOST'], user=self.DB_CONFIG['USER'], port=int(self.DB_CONFIG['PORT']), password=self.DB_CONFIG['PASSWORD'],
                                             database=db, charset=self.DB_CONFIG['CHARSET'], cursorclass=pymysql.cursors.DictCursor, autocommit=True)
             else:
-                connection = pymysql.connect(host=self.DB_CONFIG['HOST'], user=self.DB_CONFIG['USER'], password=self.DB_CONFIG['PASSWORD'],
+                connection = pymysql.connect(host=self.DB_CONFIG['HOST'], user=self.DB_CONFIG['USER'], port=int(self.DB_CONFIG['PORT']), password=self.DB_CONFIG['PASSWORD'],
                                               charset=self.DB_CONFIG['CHARSET'], cursorclass=pymysql.cursors.DictCursor, autocommit=True)
                 
             self.db_cursor = connection.cursor()

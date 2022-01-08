@@ -42,6 +42,7 @@ class Database():
         database = SITES_RESTORE[self.SITE]['LOCAL_DB']['DATABASE']
         user = SITES_RESTORE[self.SITE]['LOCAL_DB']['USER']
         password = SITES_RESTORE[self.SITE]['LOCAL_DB']['PASSWORD']
+        port = SITES_RESTORE[self.SITE]['LOCAL_DB']['PORT']
 
         if os.environ.get('-src'):
             local_path_tar_db = eval(os.environ.get('-src'))['db']
@@ -61,7 +62,7 @@ class Database():
         print(f'Restaurando base de datos: {database}')
 
         try:
-            cmd.execute([f"mysql -u {user} -p{password} {database} < {sql_file}"])
+            cmd.execute([f"mysql -u {user} -P {port} -p{password} {database} < {sql_file}"])
 
             dba.update_shop_url()
             dba.update_configuration()
