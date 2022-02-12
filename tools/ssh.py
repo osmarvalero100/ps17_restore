@@ -77,14 +77,6 @@ class Ssh():
 
         self.progress_bar.update(transferred)
 
-        # percentage = int(((transferred / toBeTransferred) * 100))
-
-        # if percentage % 5 == 0 and percentage > self.progress:
-        #     self.progress = percentage
-        #     print(f'Descarga: {percentage}% de 100%')
-        #     if percentage == 100:
-        #         self.noti.text_success('Descarga finalizada.')
-
     def scp_file_download(self, obj_type):
         """Descarga el último backup de código fuente, db o img
 
