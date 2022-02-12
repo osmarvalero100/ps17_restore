@@ -6,7 +6,6 @@ load_dotenv()
 PATH_PROJECT = os.path.dirname(os.path.abspath(__file__))
 SEP = os.path.sep # -Linux /  -Windows \
 TMP_DIR = f'{PATH_PROJECT}{SEP}tmp'
-USER_OS = PATH_PROJECT.split(f'{SEP}')[2] # whoami
 
 SITES_RESTORE = {
     'default': {
@@ -25,7 +24,12 @@ SITES_RESTORE = {
             'LOGS_DIR': '/var/www/my-local-site.com/logs',
             'ID_SHOP': 1, # si usa multitienda asigne el id del sitio a restaurar
             'DEFAULT_PRODUCT_IMG': 'https://i.imgur.com/ZCVn8I4.jpg',
-            'NEW_COOKIE_KEY': os.environ.get('NEW_COOKIE_KEY')
+            'NEW_COOKIE_KEY': os.environ.get('NEW_COOKIE_KEY'),
+            'PERMISSIONS': {
+                'chown': 'www-data:your-user',
+                'chmod': '775'
+            },
+            'SSL': False, # False para cuando no tenga un certificado SSL
         },
         # Datos de conexión a base de datos
         'LOCAL_DB': {

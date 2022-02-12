@@ -1,11 +1,13 @@
 import os
 import time
 import shutil
+import getpass
 import paramiko
 import progressbar
-from settings import SEP, SITES_RESTORE, TMP_DIR, USER_OS
+from settings import SEP, SITES_RESTORE, TMP_DIR
 from tools.notification import Notification
 from tools.utils import Utils
+
 
 class Ssh():
     ssh_client = None
@@ -77,14 +79,6 @@ class Ssh():
 
         self.progress_bar.update(transferred)
 
-        # percentage = int(((transferred / toBeTransferred) * 100))
-
-        # if percentage % 5 == 0 and percentage > self.progress:
-        #     self.progress = percentage
-        #     print(f'Descarga: {percentage}% de 100%')
-        #     if percentage == 100:
-        #         self.noti.text_success('Descarga finalizada.')
-
     def scp_file_download(self, obj_type):
         """Descarga el último backup de código fuente, db o img
 
@@ -120,7 +114,7 @@ class Ssh():
                 )
                 self.progress = 0
                 self.ssh_client.close()
-                os.system(f'chown -R {USER_OS} {TMP_DIR}')
+                os.system(f'chown -R {getpass.getuser()} {TMP_DIR}')
                 os.system(f'chmod -R 775 {TMP_DIR}')
 
                 return local_file
