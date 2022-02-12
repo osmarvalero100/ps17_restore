@@ -3,7 +3,7 @@ import os
 import random
 from tools.cmd import Cmd
 from tools.ssh import Ssh
-from settings import SITES_RESTORE, SEP, USER_OS
+from settings import SITES_RESTORE, SEP
 from tools.db_actions import DbActions
 from tools.notification import Notification
 from tools.tar_file import TarFile
@@ -13,7 +13,6 @@ class Code():
     
     def __init__(self):
         self.SITE = os.environ.get('-s', 'default')
-        self.RS_CONFIG = SITES_RESTORE[self.SITE]['REMOTE_SERVER']
         self.PATH_HTDOCS_DIR = f"{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['ROOT_SITE']}"
 
     def _get_path_folder_root_backup(self):
@@ -115,15 +114,13 @@ class Code():
         """ Asigna permisos a la carpeta del proyecto """
         noti = Notification()
         logs_dir = f"{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['LOGS_DIR']}"
+        chown = f"{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['PERMISSIONS']['chown']}"
+        chmod = f"{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['PERMISSIONS']['chmod']}"
         
         try:
-            os.system(f'chown -R www-data:{USER_OS} {self.PATH_HTDOCS_DIR}')
-            os.system(f'chmod -R 775 {self.PATH_HTDOCS_DIR}')
-
             os.makedirs(logs_dir, exist_ok=True)
-                
-            os.system(f'chown -R www-data:{USER_OS} {logs_dir}')
-            os.system(f'chmod -R 775 {logs_dir}')
+            os.system(f'chown -R {chown} {self.PATH_HTDOCS_DIR} {logs_dir}')
+            os.system(f'chmod -R {chmod} {self.PATH_HTDOCS_DIR} {logs_dir}')
         except Exception as e:
             noti.text_error(f'Error asignando permisos a htdocs y logs: {e}.')
         

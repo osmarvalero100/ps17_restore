@@ -1,11 +1,13 @@
 import os
 import time
 import shutil
+import getpass
 import paramiko
 import progressbar
-from settings import SEP, SITES_RESTORE, TMP_DIR, USER_OS
+from settings import SEP, SITES_RESTORE, TMP_DIR
 from tools.notification import Notification
 from tools.utils import Utils
+
 
 class Ssh():
     ssh_client = None
@@ -112,7 +114,7 @@ class Ssh():
                 )
                 self.progress = 0
                 self.ssh_client.close()
-                os.system(f'chown -R {USER_OS} {TMP_DIR}')
+                os.system(f'chown -R {getpass.getuser()} {TMP_DIR}')
                 os.system(f'chmod -R 775 {TMP_DIR}')
 
                 return local_file
