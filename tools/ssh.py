@@ -2,6 +2,7 @@ import os
 import time
 import shutil
 import paramiko
+import progressbar
 from settings import SEP, SITES_RESTORE, TMP_DIR, USER_OS
 from tools.notification import Notification
 from tools.utils import Utils
@@ -10,6 +11,8 @@ class Ssh():
     ssh_client = None
     noti = None
     progress = 0
+    progress_bar = None
+    progress_total = None
     
 
     def __init__(self):
@@ -69,13 +72,18 @@ class Ssh():
             transferred (int): Total transferido
             toBeTransferred (int): Total a transferir
         """
-        percentage = int(((transferred / toBeTransferred) * 100))
+        if self.progress_bar == None:
+            self.progress_bar = progressbar.ProgressBar(max_value=toBeTransferred, prefix='Descargando:: ')
 
-        if percentage % 5 == 0 and percentage > self.progress:
-            self.progress = percentage
-            print(f'Descarga: {percentage}% de 100%')
-            if percentage == 100:
-                self.noti.text_success('Descarga finalizada.')
+        self.progress_bar.update(transferred)
+
+        # percentage = int(((transferred / toBeTransferred) * 100))
+
+        # if percentage % 5 == 0 and percentage > self.progress:
+        #     self.progress = percentage
+        #     print(f'Descarga: {percentage}% de 100%')
+        #     if percentage == 100:
+        #         self.noti.text_success('Descarga finalizada.')
 
     def scp_file_download(self, obj_type):
         """Descarga el último backup de código fuente, db o img
