@@ -130,14 +130,17 @@ class DbActions:
     def update_configuration(self):
         """ Actualiza el dominio del sitio y desactiva el SSL del sitio """
         local_domain = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SHOP_URL']
+        SSL = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SSL']
 
         try:
             self.__connect()
             sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = '{local_domain}' WHERE name IN('PS_SHOP_DOMAIN','PS_SHOP_DOMAIN_SSL','PS_MAIL_DOMAIN')"
             self.db_cursor.execute(sql)
 
-            sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = '0' WHERE name IN('PS_SSL_ENABLED','PS_SSL_ENABLED_EVERYWHERE')"
-            self.db_cursor.execute(sql)
+            if SSL != True:
+                sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = '0' WHERE name IN('PS_SSL_ENABLED','PS_SSL_ENABLED_EVERYWHERE')"
+                self.db_cursor.execute(sql)
+
             self.db_cursor.close()
         except (pymysql.OperationalError, pymysql.InternalError, pymysql.ProgrammingError) as e:
             self.noti.text_error(f"Error al actualizar la tabla {self.DB_CONFIG['PS_PREFIX']}configuration: {e}")

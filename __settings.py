@@ -29,6 +29,7 @@ SITES_RESTORE = {
                 'chown': 'www-data:your-user',
                 'chmod': '775'
             },
+            'SSL': False, # False para cuando no tenga un certificado SSL
         },
         # Datos de conexión a base de datos
         'LOCAL_DB': {
