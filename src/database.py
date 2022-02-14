@@ -72,6 +72,9 @@ class Database():
             num_restore_tables = dba.get_total_tables_db()
             object_path = Utils.get_tmp_path_site_by_object('db')
 
+            data = {'total_tables': num_restore_tables}
+            Utils.set_summary('db', **data)
+
             cmd.execute([f"rm -rf {object_path}"])
             noti.text_success(f'Base de datos {database} restaurada. ( Tablas: {num_restore_tables} )')
         except Exception as e:

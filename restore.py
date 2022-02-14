@@ -6,6 +6,7 @@ from src.database import Database
 from src.img import Img
 from tools.param import Param
 from tools.validate import Validate
+from tools.utils import Utils
 
 
 if __name__ == '__main__':
@@ -32,3 +33,5 @@ if __name__ == '__main__':
         if 'img' in objects:
             img = Img()
             img.restore()
+
+        Utils.print_summary()
