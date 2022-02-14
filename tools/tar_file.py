@@ -20,6 +20,8 @@ class TarFile():
         
         size_bk = Utils.get_file_size(file)
         object_path = Utils.get_tmp_path_site_by_object(type_obj)
+        data = {'size_backup': size_bk}
+        Utils.set_summary(type_obj, **data)
 
         print(f'\nDescomprimiendo backup {type_obj} ( {size_bk} )')
 
