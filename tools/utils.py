@@ -78,7 +78,7 @@ class Utils():
     def print_summary():
         summary = Utils.get_summary()
 
-        print(f'\n>>>>>  RESUMEN  <<<<<<')
+        print(f'\n  Resumen Backup')
 
         objs = {'code': 'Código Fuente', 'db': 'Base de Datos', 'img': 'Imágenes'}
 
@@ -87,10 +87,7 @@ class Utils():
                 print(f'[ {objs[key]} ]')
                 for k, v in value.items():
                     print(f'- {k}: {v}')
-
-                print('') 
-
-        print(f'>>>>>>>>  ---  <<<<<<<<')
+                print('\t---')
 
         site = os.environ.get('-s', 'default')
         summary_json = f'{TMP_DIR}{os.path.sep}{site}.json'

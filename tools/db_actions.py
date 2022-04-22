@@ -131,20 +131,41 @@ class DbActions:
         """ Actualiza el dominio del sitio y desactiva el SSL del sitio """
         local_domain = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SHOP_URL']
         SSL = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SSL']
+        self.__connect()
 
-        try:
-            self.__connect()
-            sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = '{local_domain}' WHERE name IN('PS_SHOP_DOMAIN','PS_SHOP_DOMAIN_SSL','PS_MAIL_DOMAIN')"
+        if SSL != True:
+            sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = '0' WHERE name IN('PS_SSL_ENABLED','PS_SSL_ENABLED_EVERYWHERE')"
             self.db_cursor.execute(sql)
-
-            if SSL != True:
-                sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = '0' WHERE name IN('PS_SSL_ENABLED','PS_SSL_ENABLED_EVERYWHERE')"
-                self.db_cursor.execute(sql)
-
-            self.db_cursor.close()
-        except (pymysql.OperationalError, pymysql.InternalError, pymysql.ProgrammingError) as e:
-            self.noti.text_error(f"Error al actualizar la tabla {self.DB_CONFIG['PS_PREFIX']}configuration: {e}")
         
+        if 'SHOPS' in SITES_RESTORE[self.SITE]: # Para multitienda
+            try:
+                for shop in SITES_RESTORE[self.SITE]['SHOPS']:
+                    id_shop = shop['id_shop']
+                    domain = shop['domain']
+                    domain_ssl = shop['domain_ssl']
+                    group_shop = ''
+
+                    if 'id_shop_group' in shop and len(shop['id_shop_group']) > 0:
+                        group_shop = f"AND id_shop_group = {shop['id_shop_group']}"
+
+                    sql_domain = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = '{domain}' WHERE name = 'PS_SHOP_DOMAIN' AND id_shop= {id_shop} {group_shop}"
+                    self.db_cursor.execute(sql_domain)
+                    print(f"- {self.DB_CONFIG['PS_PREFIX']}configuration: PS_SHOP_DOMAIN cambiado a: {domain}")
+
+                    sql_domain_ssl = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = '{domain_ssl}' WHERE name = 'PS_SHOP_DOMAIN_SSL' AND id_shop= {id_shop} {group_shop}"
+                    self.db_cursor.execute(sql_domain_ssl)
+                    print(f"- {self.DB_CONFIG['PS_PREFIX']}configuration: PS_SHOP_DOMAIN_SSL cambiado a: {domain_ssl}")
+            except (pymysql.OperationalError, pymysql.InternalError, pymysql.ProgrammingError) as e:
+                self.noti.text_error(f"Error al actualizar la tabla xxxx {self.DB_CONFIG['PS_PREFIX']}configuration: {e}")
+        else:
+            try:
+                sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = '{local_domain}' WHERE name IN('PS_SHOP_DOMAIN','PS_SHOP_DOMAIN_SSL','PS_MAIL_DOMAIN')"
+                self.db_cursor.execute(sql)
+                print(f"- {self.DB_CONFIG['PS_PREFIX']}configuration: PS_SHOP_DOMAIN cambiado a: {local_domain}")
+
+            except (pymysql.OperationalError, pymysql.InternalError, pymysql.ProgrammingError) as e:
+                self.noti.text_error(f"Error al actualizar la tabla {self.DB_CONFIG['PS_PREFIX']}configuration: {e}")
+        self.db_cursor.close()
 
     def disabled_modules(self):
         """Desactivar módulos para la tienda """

@@ -11,7 +11,6 @@ from tools.utils import Utils
 
 if __name__ == '__main__':
     param = Param()
-    
     param.set_params(sys.argv[1:])
     objects = param.getObjects()
 

@@ -22,7 +22,7 @@ SITES_RESTORE = {
             'SHOP_URL': 'my-local-site.com',
             'ROOT_SITE': '/var/www/my-local-site.com/htdocs',
             'LOGS_DIR': '/var/www/my-local-site.com/logs',
-            'ID_SHOP': 1, # si usa multitienda asigne el id del sitio a restaurar
+            'ID_SHOP': 1, # Si tiene multitienda aisgne el id_shop de la tienda principal
             'DEFAULT_PRODUCT_IMG': 'https://i.imgur.com/ZCVn8I4.jpg',
             'NEW_COOKIE_KEY': os.environ.get('NEW_COOKIE_KEY'),
             'PERMISSIONS': {
@@ -58,6 +58,7 @@ SITES_RESTORE = {
         'SHOPS': [
             {
                 'id_shop': 1,
+                'id_shop_group': '',
                 'domain': 'shop-1.com',
                 'domain_ssl': 'shop-1.com',
                 'physical_uri': '/',
@@ -65,12 +66,13 @@ SITES_RESTORE = {
             },
             {
                 'id_shop': 2,
+                'id_shop_group': '',
                 'domain': 'shop-2.com',
                 'domain_ssl': 'shop-2.com',
                 'physical_uri': '/',
                 'virtual_uri': ''
             }
         ]
-    }
+    },
     # Agregue aquí más sitios a restaurar
 }
