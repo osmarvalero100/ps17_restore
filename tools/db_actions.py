@@ -145,7 +145,7 @@ class DbActions:
                     domain_ssl = shop['domain_ssl']
                     group_shop = ''
 
-                    if 'id_shop_group' in shop and len(shop['id_shop_group']) > 0:
+                    if 'id_shop_group' in shop and shop['id_shop_group'] > 0:
                         group_shop = f"AND id_shop_group = {shop['id_shop_group']}"
 
                     sql_domain = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = '{domain}' WHERE name = 'PS_SHOP_DOMAIN' AND id_shop= {id_shop} {group_shop}"
@@ -197,7 +197,14 @@ class DbActions:
 
             if len(SITES_RESTORE[self.SITE]['MODULES']['sandbox']['vars']) > 0:
                 for var in SITES_RESTORE[self.SITE]['MODULES']['sandbox']['vars']:
-                    sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = '0' WHERE name = '{var}'"
+                    value = 0
+                    if type(var) == dict:
+                        for v in var:
+                            value = var.get(v)
+                            var = v
+                            break
+
+                    sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}configuration SET value = {value}  WHERE name = '{var}'"
                     self.db_cursor.execute(sql)
                     print(f'- Variable de conf cambiada a modo sanbox: {var}')
 

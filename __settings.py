@@ -48,9 +48,13 @@ SITES_RESTORE = {
                 #'name_module' 
             ],
             # Módulos a poner en modo sandbox: table: ps_configuration in column name 
+            # Por defecto se asigna como valor 0 a cada variable 
+            # Si necesita poner un valor diferente asignelo así: {'var': value}
             'sandbox': {
                 'vars': [
-                    #'MODULE_NAME_VAR_SANDBOX'
+                    #'MODULE_NAME_VAR_SANDBOX',
+                    #{'MODULE_VAR_WITH_VALUE': 'off'},
+
                 ]
             }
         },
