@@ -47,7 +47,7 @@ class Img():
         command = [f'mv {path_img_backup} {self.PATH_HTDOCS_DIR}']
         cmd.execute(command)
 
-        object_path = Utils.get_tmp_path_site_by_object('db')
+        object_path = Utils.get_tmp_path_site_by_object('img')
 
         cmd.execute([f"rm -rf {object_path}"])
 
