@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from getpass import getpass
 from src.code import Code
 from src.database import Database
@@ -10,6 +11,7 @@ from tools.utils import Utils
 
 
 if __name__ == '__main__':
+    os.environ['start_time_bk'] = str(time.time())
     param = Param()
     param.set_params(sys.argv[1:])
     objects = param.getObjects()

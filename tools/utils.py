@@ -1,5 +1,7 @@
 import os
 import json
+import time
+from datetime import datetime, timedelta
 from settings import TMP_DIR, SEP
 from .cmd import Cmd
 
@@ -41,7 +43,6 @@ class Utils():
 
         return f'{TMP_DIR}{SEP}{site}{SEP}{obj_type}'
 
-    
     @staticmethod
     def get_summary():
         site = os.environ.get('-s', 'default')
@@ -73,7 +74,6 @@ class Utils():
         with open(summary_json, 'w') as summary_file:
             json.dump(summary, summary_file)
 
-    
     @staticmethod
     def print_summary():
         summary = Utils.get_summary()
@@ -91,6 +91,27 @@ class Utils():
 
         site = os.environ.get('-s', 'default')
         summary_json = f'{TMP_DIR}{os.path.sep}{site}.json'
+        total_time_bks = Utils.get_time_restore(float(os.environ.get('start_time_bk')))
+
+        print('[ Total time ]')
+        print(f'- time: {total_time_bks}')
+        print('\t---')
 
         if os.path.exists(summary_json):
             os.remove(summary_json)
+
+    @staticmethod
+    def get_time_restore(start_time):
+        total_time = time.time() - start_time
+        sec = timedelta(seconds=total_time)
+        d = datetime(1,1,1) + sec
+        days = d.day-1 if d.day-1 > 9 else f'0{d.day-1}'
+        hours = d.hour if d.hour > 9 else f'0{d.hour}'
+        minutes = d.minute if d.minute > 9 else f'0{d.minute}'
+        seconds = d.second if d.second > 9 else f'0{d.second}'
+        time_bk = ''
+
+        if int(days) > 0:
+            time_bk = f'{time_bk} {days}d'
+
+        return f'{time_bk} {hours}:{minutes}:{seconds}'.strip()
