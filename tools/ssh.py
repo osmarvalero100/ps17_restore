@@ -75,7 +75,7 @@ class Ssh():
             toBeTransferred (int): Total a transferir
         """
         if self.progress_bar == None:
-            self.progress_bar = progressbar.ProgressBar(max_value=toBeTransferred, prefix='Descargando:: ')
+            self.progress_bar = progressbar.ProgressBar(max_value=toBeTransferred, kwargs={'line_breaks': False})
 
         self.progress_bar.update(transferred)
 
