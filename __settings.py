@@ -25,7 +25,7 @@ SITES_RESTORE = {
             'ID_SHOP': 1, # Si tiene multitienda aisgne el id_shop de la tienda principal
             'DEFAULT_PRODUCT_IMG': 'https://i.imgur.com/ZCVn8I4.jpg',
             'NEW_COOKIE_KEY': os.environ.get('NEW_COOKIE_KEY'),
-            'PERMISSIONS': {
+            'PERMISSIONS': { # Omita este elemento si no lo considera necesario
                 'chown': 'www-data:your-user',
                 'chmod': '775'
             },

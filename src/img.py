@@ -1,5 +1,5 @@
 import os
-from settings import SITES_RESTORE, SEP, TMP_DIR
+from settings import SITES_RESTORE, SEP
 from tools.cmd import Cmd
 from tools.notification import Notification
 from tools.ssh import Ssh
@@ -26,6 +26,21 @@ class Img():
 
         return result.replace(f'{SEP}admin\n', '')
 
+    def _set_permissions(self):
+        """ Asigna permisos a la carpeta del proyecto """
+        noti = Notification()
+        try:
+            if 'PERMISSIONS' in SITES_RESTORE[self.SITE]['LOCAL_SERVER']:
+                permissions = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['PERMISSIONS']
+                if 'chown' in permissions and len(str(permissions['chown'])):
+                    os.system(f'chown -R {permissions["chown"]} {self.PATH_HTDOCS_DIR}{SEP}img')
+                    print(f'chown -R {permissions["chown"]} {self.PATH_HTDOCS_DIR}{SEP}img')
+                if 'chmod' in permissions and len(str(permissions['chmod'])):
+                    os.system(f'chmod -R {permissions["chmod"]} {self.PATH_HTDOCS_DIR}{SEP}img')
+                    print(f'chmod -R {permissions["chmod"]} {self.PATH_HTDOCS_DIR}{SEP}img')
+        except Exception as e:
+            noti.text_error(f'Error asignando permisos a htdocs y logs: {e}.')
+
     def restore(self):
         tar_file = TarFile()
 
@@ -46,9 +61,9 @@ class Img():
 
         command = [f'mv {path_img_backup} {self.PATH_HTDOCS_DIR}']
         cmd.execute(command)
+        self._set_permissions()
 
         object_path = Utils.get_tmp_path_site_by_object('img')
-
         cmd.execute([f"rm -rf {object_path}"])
 
         noti = Notification()

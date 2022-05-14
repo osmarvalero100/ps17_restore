@@ -114,13 +114,14 @@ class Code():
         """ Asigna permisos a la carpeta del proyecto """
         noti = Notification()
         logs_dir = f"{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['LOGS_DIR']}"
-        chown = f"{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['PERMISSIONS']['chown']}"
-        chmod = f"{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['PERMISSIONS']['chmod']}"
-        
         try:
             os.makedirs(logs_dir, exist_ok=True)
-            os.system(f'chown -R {chown} {self.PATH_HTDOCS_DIR} {logs_dir}')
-            os.system(f'chmod -R {chmod} {self.PATH_HTDOCS_DIR} {logs_dir}')
+            if 'PERMISSIONS' in SITES_RESTORE[self.SITE]['LOCAL_SERVER']:
+                permissions = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['PERMISSIONS']
+                if 'chown' in permissions and len(str(permissions['chown'])):
+                    os.system(f'chown -R {permissions["chown"]} {self.PATH_HTDOCS_DIR} {logs_dir}')
+                if 'chmod' in permissions and len(str(permissions['chmod'])):
+                    os.system(f'chmod -R {permissions["chmod"]} {self.PATH_HTDOCS_DIR} {logs_dir}')
         except Exception as e:
             noti.text_error(f'Error asignando permisos a htdocs y logs: {e}.')
         
