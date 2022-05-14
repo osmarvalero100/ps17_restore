@@ -34,10 +34,8 @@ class Img():
                 permissions = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['PERMISSIONS']
                 if 'chown' in permissions and len(str(permissions['chown'])):
                     os.system(f'chown -R {permissions["chown"]} {self.PATH_HTDOCS_DIR}{SEP}img')
-                    print(f'chown -R {permissions["chown"]} {self.PATH_HTDOCS_DIR}{SEP}img')
                 if 'chmod' in permissions and len(str(permissions['chmod'])):
                     os.system(f'chmod -R {permissions["chmod"]} {self.PATH_HTDOCS_DIR}{SEP}img')
-                    print(f'chmod -R {permissions["chmod"]} {self.PATH_HTDOCS_DIR}{SEP}img')
         except Exception as e:
             noti.text_error(f'Error asignando permisos a htdocs y logs: {e}.')
 
