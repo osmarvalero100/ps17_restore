@@ -160,11 +160,11 @@ class Code():
 
         self._set_permissions()
 
-        url_site = f"http://{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SHOP_URL']}"
+        protocol = 'https' if SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SSL'] else 'http'
+        url_site = f"{protocol}://{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SHOP_URL']}"
         object_path = Utils.get_tmp_path_site_by_object('code')
         
         cmd.execute([f"rm -rf {object_path}"])
-        #cmd.execute([f"x-www-browser {url_site}"])
         
         noti.text_success(f'Código fuente restaurado.')
         
