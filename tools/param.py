@@ -9,6 +9,7 @@ class Param():
         info = """
     --help  Lista los argumentos disponibles.
     --sites Lista los sitios configurados.
+    -i      Restauración interactiva.
     -s      Nombre del sitio restaurar.
     -src    Pasar los backups locales de manera explicita {'db':'path', 'code': 'path'}.
     -rsrc   Pasar los backups desde el servidor remoto de backups de manera explicita {'db':'path', 'code': 'path'}.
@@ -18,6 +19,23 @@ class Param():
         """
         print(info)
 
+    def interactivePrompt(self):
+        print('\t\t---\n  Site  \tDomain')
+        self.list_sites()
+        site = input('Escriba el nombre del sitio a restaurar: ')
+        while site not in SITES_RESTORE.keys():
+            site = input('Escriba el nombre del sitio a restaurar: ')
+        print('\t\t---')
+        objs = input('Escriba los objetos a restaurar (code,db,img) separados por coma. Ejemplo -> code,img: ')
+        os.environ['-s'] = site
+        os.environ['-objs'] = objs
+
+        if 'db' in tuple(objs.split(',')):
+            print('\t\t---')
+            szdb = input('¿Descargar el backup de base de datos de mayor tamaño creado en las últimas 24 horas? (Y/n): ')
+            if szdb.upper() == 'Y' or szdb == '':
+                os.environ['-szdb'] = 'True'
+        print('\t\t---')
 
     def set_params(self, str_params):
         """ Extrae los parámetros pasados por linea de comando
@@ -33,10 +51,12 @@ class Param():
                     exit()
 
                 if str_param == '--sites':
-                    for site in SITES_RESTORE.keys():
-                        domain = SITES_RESTORE[site]['LOCAL_SERVER']['SHOP_URL']
-                        print(f' * {site} => {domain}')
+                    self.list_sites()
                     exit()
+
+                if str_param == '-i':
+                    self.interactivePrompt()
+                    break
 
                 if '=' in str_param:
                     index_sep = str_param.index('=')
@@ -50,6 +70,8 @@ class Param():
         Returns:
             [tuple]: Tupla con objetos a restaurar
         """
+        if os.environ.get('-objs'):
+            return tuple(os.environ.get('-objs').split(','))
         if os.environ.get('-src'):
             return tuple(eval(os.environ.get('-src')).keys())
         elif os.environ.get('-rsrc'):
@@ -61,3 +83,8 @@ class Param():
                 return ('db', 'code', 'img')
 
             return ('db', 'code')
+    
+    def list_sites(self):
+        for site in SITES_RESTORE.keys():
+            domain = SITES_RESTORE[site]['LOCAL_SERVER']['SHOP_URL']
+            print(f' * {site} => {domain}')
