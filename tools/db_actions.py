@@ -218,7 +218,7 @@ class DbActions:
         """
         id_shop = SITES_RESTORE[self.SITE]['LOCAL_SERVER']['ID_SHOP']
         self.__connect()
-        sql = f"SELECT pl.iso_code FROM ps_lang_shop pls JOIN ps_lang pl ON pls.id_lang = pl.id_lang WHERE pls.id_shop = {id_shop} LIMIT 1"
+        sql = f"SELECT pl.iso_code FROM {self.DB_CONFIG['PS_PREFIX']}lang_shop pls JOIN {self.DB_CONFIG['PS_PREFIX']}lang pl ON pls.id_lang = pl.id_lang WHERE pls.id_shop = {id_shop} LIMIT 1"
         
         if self.db_cursor.execute(sql):
             return self.db_cursor.fetchone()['iso_code']

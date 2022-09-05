@@ -62,6 +62,7 @@ class Database():
         print(f'Restaurando base de datos: {database}')
 
         try:
+            #cmd.execute(f"sed -i 's/utf8mb4_0900_ai_ci/utf8_general_ci/g' {sql_file} && sed -i 's/CHARSET=utf8mb4/CHARSET=utf8/g' {sql_file}")
             cmd.execute([f"mysql -u {user} -P {port} -p{password} {database} < {sql_file}"])
 
             dba.update_shop_url()
