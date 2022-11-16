@@ -3,6 +3,7 @@ import os
 import pymysql
 from settings import SITES_RESTORE
 from tools.notification import Notification
+from tools.utils import Utils
 
 class DbActions:
 
@@ -61,14 +62,12 @@ class DbActions:
         Args:
             name (str): Nombre de la base de datos
         """
-        print(f'Creando base de datos: {name}')
-
+        Utils.update_restore_progress("db", f"Creando base de datos: {name}")
         try:
             self.__connect(None)
             self.db_cursor.execute(f'CREATE DATABASE {name}')
             self.db_cursor.execute(f"ALTER DATABASE {name} CHARACTER SET {self.DB_CONFIG['CHARSET']} COLLATE {self.DB_CONFIG['COLLATION']}")
             self.db_cursor.close()
-            self.noti.text_success(f'Base de datos {name} creada.')
         except Exception as e:
             self.noti.text_error(f'Error al crear la base de datos {name}: {e}')
 
@@ -80,13 +79,11 @@ class DbActions:
         """
 
         if self.isset(name):
-            print(f'Eliminando base de datos: {name}')
-
+            Utils.update_restore_progress('db', f"Eliminando base de datos: {name}")
             try:
                 self.__connect(None)
                 self.db_cursor.execute(f'DROP DATABASE {name}')
                 self.db_cursor.close()
-                self.noti.text_success(f'Base de datos {name} eliminada.')
             except Exception as e:
                 self.noti.text_error(f'Error al eliminar la base de datos {name}: {e}')
 
@@ -119,7 +116,6 @@ class DbActions:
             try:
                 sql = f"UPDATE {self.DB_CONFIG['PS_PREFIX']}shop_url SET domain = '{local_domain}', domain_ssl = '{local_domain}' WHERE id_shop = {id_shop}"
                 self.db_cursor.execute(sql)
-                
                 print(f'- Shop Domain cambiado a: {local_domain}')
 
             except (pymysql.OperationalError, pymysql.InternalError, pymysql.ProgrammingError) as e:

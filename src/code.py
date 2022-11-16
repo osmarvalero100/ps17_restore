@@ -30,7 +30,6 @@ class Code():
 
             if result:
                 return result
-                break
 
         return None
 
@@ -125,23 +124,10 @@ class Code():
         except Exception as e:
             noti.text_error(f'Error asignando permisos a htdocs y logs: {e}.')
         
-
-    def restore(self):
-        """Restaura el codígo fuente del sitio Prestashop a partir de un backup
-        """
+    def make_restore(self):
         cmd = Cmd()
-        noti = Notification()
-        tar_file = TarFile()
-
-        if os.environ.get('-src'):
-            local_path_tar_code = eval(os.environ.get('-src'))['code']
-            tar_file.descompress(local_path_tar_code, 'code')
-        else:
-            ssh = Ssh()
-            tar_bk = ssh.scp_file_download('code')
-            tar_file.descompress(tar_bk, 'code')
-
-        print('Restaurando code')
+        #print('Restaurando code')
+        Utils.update_restore_progress("code", "Restaurando code")
         # Elimina el código fuente antiguo
         rm_command = [f'rm -rf {self.PATH_HTDOCS_DIR}*']
         cmd.execute(rm_command)
@@ -159,17 +145,51 @@ class Code():
             self._set_default_prod_img()
 
         self._set_permissions()
-
-        protocol = 'https' if SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SSL'] else 'http'
-        url_site = f"{protocol}://{SITES_RESTORE[self.SITE]['LOCAL_SERVER']['SHOP_URL']}"
         object_path = Utils.get_tmp_path_site_by_object('code')
-        
         cmd.execute([f"rm -rf {object_path}"])
         
-        noti.text_success(f'Código fuente restaurado.')
+        Utils.update_restore_progress("code", "Finalizado")
+
+    def restore(self):
+        """Restaura el codígo fuente del sitio Prestashop a partir de un backup
+        """
+        tar_file = TarFile()
+
+        if os.environ.get('-src'):
+            local_path_tar_code = eval(os.environ.get('-src'))['code']
+            tar_file.descompress(local_path_tar_code, 'code')
+        else:
+            ssh = Ssh()
+            tar_bk = ssh.scp_file_download('code')
+            tar_file.descompress(tar_bk, 'code')
         
-        site = os.environ.get('-s', 'default')
-        noti.alert_success(f'Tu sitio está listo. Visítalo ahora: {url_site}')
+        self.make_restore()
+        objects = os.environ.get('restore_objects', '')
+        restore_objects = tuple(map(str, objects.split(',')))
 
+        if 'img' in restore_objects:
+            import sys, time
+            wait_message = "~ \033[1mImg\033[0m[ Pausado: Esperando final de descarga de imágenes ] "
+            tmp_img_folder = Utils.get_tmp_path_site_by_object('img')
 
-       
+            while True:
+                if os.path.exists(f"{tmp_img_folder}{SEP}img.ok"):
+                    break
+                sys.stdout.writelines("\b" * len(wait_message))
+                sys.stdout.writelines(" " * len(wait_message))
+                sys.stdout.writelines("\b" * len(wait_message))
+                sys.stdout.writelines(wait_message)
+                sys.stdout.flush()
+                time.sleep(30)
+
+            from src.img import Img
+            img = Img()
+            img.make_restore()
+            # from concurrent.futures import ThreadPoolExecutor
+            # executor = ThreadPoolExecutor(max_workers=2)
+            # executor.submit(self.make_restore())
+            # from src.img import Img
+            # img = Img()
+            # executor.submit(img.restore())
+        
+            

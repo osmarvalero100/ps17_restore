@@ -38,18 +38,7 @@ class Img():
                     os.system(f'chmod -R {permissions["chmod"]} {self.PATH_HTDOCS_DIR}{SEP}img')
         except Exception as e:
             noti.text_error(f'Error asignando permisos a htdocs y logs: {e}.')
-
-    def restore(self):
-        tar_file = TarFile()
-
-        if os.environ.get('-src'):
-            local_path_tar_code = eval(os.environ.get('-src'))['img']
-            tar_file.descompress(local_path_tar_code, 'img')
-        else:
-            ssh = Ssh()
-            tar_bk = ssh.scp_file_download('img')
-            tar_file.descompress(tar_bk, 'img') 
-
+    def make_restore(self):
         path_img_backup = self.get_path_folder_img_backup()
         path_img = f'{self.PATH_HTDOCS_DIR}{SEP}img'
 
@@ -63,6 +52,24 @@ class Img():
 
         object_path = Utils.get_tmp_path_site_by_object('img')
         cmd.execute([f"rm -rf {object_path}"])
+        Utils.update_restore_progress("img", "Finalizado")
 
-        noti = Notification()
-        noti.text_success(f'Imágenes restauradas.')
+    def restore(self):
+        tar_file = TarFile()
+
+        if os.environ.get('-src'):
+            local_path_tar_code = eval(os.environ.get('-src'))['img']
+            tar_file.descompress(local_path_tar_code, 'img')
+        else:
+            ssh = Ssh()
+            tar_bk = ssh.scp_file_download('img')
+            tar_file.descompress(tar_bk, 'img')
+
+        tmp_img_folder = Utils.get_tmp_path_site_by_object('img')
+        cmd = Cmd()
+        cmd.execute([f'touch {tmp_img_folder}{SEP}img.ok'])
+            
+        objects = os.environ.get('restore_objects', '')
+        restore_objects = tuple(map(str, objects.split(',')))
+        if 'code' not in restore_objects:
+            self.make_restore()

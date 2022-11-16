@@ -1,8 +1,6 @@
 import tarfile
 from tools.notification import Notification
 from .utils import Utils
-from settings import SEP, TMP_DIR
-
 
 class TarFile():
     """
@@ -22,14 +20,12 @@ class TarFile():
         object_path = Utils.get_tmp_path_site_by_object(type_obj)
         data = {'size_backup': size_bk}
         Utils.set_summary(type_obj, **data)
-
-        print(f'\nDescomprimiendo backup {type_obj} ( {size_bk} )')
+        Utils.update_restore_progress(type_obj, f"Descomprimiendo backup")
 
         try:
             f = tarfile.open(file, 'r:gz')
             with f as t:
                 t.extractall(f'{object_path}')
             f.close()
-            noti.text_success('Descompresión finalizada.')
         except Exception as e:
             noti.text_error(f'No fue posible descomprimir backup {type_obj}: {e}')

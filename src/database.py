@@ -1,5 +1,5 @@
 import os
-from settings import SITES_RESTORE, TMP_DIR, SEP
+from settings import SITES_RESTORE
 from tools.cmd import Cmd
 from tools.db_actions import DbActions
 from tools.notification import Notification
@@ -58,13 +58,12 @@ class Database():
             dba.delete(database)
         
         dba.create(database)
-
-        print(f'Restaurando base de datos: {database}')
-
+        Utils.update_restore_progress("db", f"Restaurando base de datos: {database}")
         try:
-            #cmd.execute(f"sed -i 's/utf8mb4_0900_ai_ci/utf8_general_ci/g' {sql_file} && sed -i 's/CHARSET=utf8mb4/CHARSET=utf8/g' {sql_file}")
+            cmd.execute(f"sed -i 's/utf8mb4_0900_ai_ci/utf8_general_ci/g' {sql_file} && sed -i 's/CHARSET=utf8mb4/CHARSET=utf8/g' {sql_file}")
             cmd.execute([f"mysql -u {user} -P {port} -p{password} {database} < {sql_file}"])
 
+            Utils.update_restore_progress("db", f"Configurando módulos a modo desarrollo")
             dba.update_shop_url()
             dba.update_configuration()
             dba.disabled_modules()
@@ -75,9 +74,7 @@ class Database():
 
             data = {'total_tables': num_restore_tables}
             Utils.set_summary('db', **data)
-
             cmd.execute([f"rm -rf {object_path}"])
-            noti.text_success(f'Base de datos {database} restaurada. ( Tablas: {num_restore_tables} )')
+            Utils.update_restore_progress("db", "Finalizado")
         except Exception as e:
             noti.text_error(f'Error restaurando la base de datos {database}: {e}')
-        

@@ -10,6 +10,16 @@ class Utils():
     Métodos utiles de uso general
     """
 
+    def update_restore_progress(obj_type, message):
+        """Imprime en terminal el avance de la restuación de cada backup
+        """
+        if obj_type == 'db':
+            print(f"~ \033[1mDB\033[0m[ {message} ]")
+        if obj_type == 'code':
+            print(f"~ \033[1mCode\033[0m[ {message} ]")
+        if obj_type == 'img':
+            print(f"~ \033[1mImg\033[0m[ {message} ] ")
+
     @staticmethod
     def get_file_size(path_bk):
         """Obtiene el peso de un archivo

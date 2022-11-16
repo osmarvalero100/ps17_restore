@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import shutil
 import getpass
@@ -28,6 +29,7 @@ class Ssh():
             self.ssh_client.connect(self.RS_CONFIG['HOST'], username=os.environ['RS_USER'], password=os.environ['RS_PASS'])
         except paramiko.SSHException as e:
             self.noti.text_error(f"Usuario o contraseña incorrecta para server {self.RS_CONFIG['HOST']}: {e}")
+            sys.exit(1)
 
     def get_file_name_remote_backup(self, dir, obj_type):
         """Obtiene el nombre del archivo que contiene el backup de code, db ó img
@@ -102,15 +104,13 @@ class Ssh():
                 sftp_client =  self.ssh_client.open_sftp()
                 remote_file = f'{rs_dir}{SEP}{tar_remote_file}'
                 local_file = f'{object_path}{SEP}{tar_remote_file}'
-
                 # Descarga backup del servidor y se guarda en directorio local tmp
-                print(f'Inicia la descarga del backup {obj_type}')
-                print(f'( {tar_remote_file} )')
+                Utils.update_restore_progress(obj_type, f"Descargando {tar_remote_file}")
                 
                 sftp_client.get(
                     remote_file,
                     local_file,
-                    callback=self.print_progress
+                    #callback=self.print_progress
                 )
                 self.progress = 0
                 self.ssh_client.close()
