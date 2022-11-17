@@ -16,6 +16,7 @@ class Param():
     -only   Solo restaura el objeto indicado (db, code ó img) úselo solo para backup remoto.
     -full   Asigne valor True para realizar una restauración completa (code, db e img).
     -szdb   Obtiene el backup remoto de base de datos de mayor tamaño creado en las últimas 24 horas.
+    -dw     Descargar sin restaurar.
         """
         print(info)
 
