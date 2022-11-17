@@ -39,6 +39,8 @@ Argumentos de línea  de comandos
 
 **-szdb**  =>  Obtiene el backup remoto de base de datos de mayor tamaño creado en las últimas 24 horas.
 
+**-dw**  =>  Opción para descargar sin restaurar.
+
 Ejemplos
 --
 * ```sudo python3 restore.py -i```. Activa una restauración paso a paso en la terminal, donde podrá elegir los objetos a restaurar.
@@ -48,3 +50,5 @@ Ejemplos
 * ```sudo python3 restore.py -only=db```. Si solo desea restaurar un tipo de objeto indiquelo como valor del argumento "-only". En este ejemplo se indica que solo se requiere restaurar la base de datos.
 * ```sudo python3 restore.py -full=True```. Restaura todos los tipos de objetos permitidos: db, code e img.
 * ```sudo python3 restore.py -szdb=True```. Selecciona el backup de base da datos de mayor tamaño y que se haya creado en las últimas 24 horas. Úselo si está generando algunos backups que excluyen tablas y otros con todas las tablas. Puede ser combinado con el argumento "-only".
+
+* ```sudo python3 restore.py -s=my_site -dw=db,code,img```. Con -dw podrá indicar los objetos que desee descargar separandolos por coma. Estos objetos solo se descargan, no realizaran el proceso de restauración.
