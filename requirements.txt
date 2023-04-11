@@ -1,5 +1,5 @@
-paramiko==2.7.2
-Terminal-Text-Color==0.3
-pymysql==0.9.3
-python-dotenv==0.15.0
-progressbar2==4.0.0
+paramiko
+Terminal-Text-Color
+pymysql
+python-dotenv
+progressbar
